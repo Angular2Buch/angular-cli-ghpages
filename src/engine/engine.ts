@@ -32,7 +32,7 @@ export async function run(
   await publishViaGhPages(ghpages, dir, options, logger);
 
   logger.info(
-    '🚀 Successfully published via angular-cli-ghpages! Have a nice day!'
+    `🚀 Successfully published ${options.ghPagesUrl} via angular-cli-ghpages! Have a nice day!`
   );
 }
 
@@ -156,6 +156,17 @@ export async function prepareOptions(
         'https://github.com/',
         `https://x-access-token:${process.env.GITHUB_TOKEN}@github.com/`
       );
+    }
+  }
+
+  if (options.repo) {
+    // Not assume custom domain page
+    let trimEndDotGit = options.repo
+      .replace(/\/\s*$/, '')
+      .replace(/\.git\s*$/, '');
+    const matchEndsWithRepoName = trimEndDotGit.match(/github.com(\/|:)(.*)\/(.*)$/);
+    if (matchEndsWithRepoName) {
+      options.ghPagesUrl = `https://${matchEndsWithRepoName[2]}.github.io/${matchEndsWithRepoName[3]}`;
     }
   }
 
